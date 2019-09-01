@@ -23,23 +23,25 @@
  */
 package com.segment.analytics.integrations;
 
+import androidx.annotation.CheckResult;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.segment.analytics.AnalyticsContext;
+import com.segment.analytics.ValueMap;
+
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import static com.segment.analytics.internal.Utils.assertNotNull;
 import static com.segment.analytics.internal.Utils.assertNotNullOrEmpty;
 import static com.segment.analytics.internal.Utils.immutableCopyOf;
 import static com.segment.analytics.internal.Utils.isNullOrEmpty;
 import static com.segment.analytics.internal.Utils.parseISO8601Date;
 import static com.segment.analytics.internal.Utils.toISO8601String;
-
-import android.support.annotation.CheckResult;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import com.segment.analytics.AnalyticsContext;
-import com.segment.analytics.ValueMap;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * A payload object that will be sent to the server. Clients will not decode instances of this
@@ -66,7 +68,6 @@ public abstract class BasePayload extends ValueMap {
       @NonNull Map<String, Object> integrations,
       @Nullable String userId,
       @NonNull String anonymousId) {
-    put(CHANNEL_KEY, Channel.mobile);
     put(TYPE_KEY, type);
     put(MESSAGE_ID, messageId);
     put(TIMESTAMP_KEY, toISO8601String(timestamp));

@@ -23,11 +23,8 @@
  */
 package com.segment.analytics;
 
-import static com.segment.analytics.internal.Utils.getInputStream;
-import static com.segment.analytics.internal.Utils.readFully;
-import static java.net.HttpURLConnection.HTTP_OK;
-
 import android.text.TextUtils;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,11 +32,16 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.util.zip.GZIPOutputStream;
 
+import static com.segment.analytics.internal.Utils.getInputStream;
+import static com.segment.analytics.internal.Utils.readFully;
+import static java.net.HttpURLConnection.HTTP_OK;
+
 /** HTTP client which can upload payloads and fetch project settings from the Segment public API. */
 class Client {
 
   final ConnectionFactory connectionFactory;
   final String writeKey;
+  final String accountID;
 
   private static Connection createPostConnection(HttpURLConnection connection) throws IOException {
     final OutputStream outputStream;
@@ -82,23 +84,24 @@ class Client {
     };
   }
 
-  Client(String writeKey, ConnectionFactory connectionFactory) {
+  Client(String writeKey, String accountID, ConnectionFactory connectionFactory) {
     this.writeKey = writeKey;
     this.connectionFactory = connectionFactory;
+    this.accountID = accountID;
   }
 
   Connection upload() throws IOException {
-    HttpURLConnection connection = connectionFactory.upload(writeKey);
+    HttpURLConnection connection = connectionFactory.upload(writeKey, accountID);
     return createPostConnection(connection);
   }
 
   Connection attribution() throws IOException {
-    HttpURLConnection connection = connectionFactory.attribution(writeKey);
+    HttpURLConnection connection = connectionFactory.attribution(writeKey, accountID);
     return createPostConnection(connection);
   }
 
   Connection fetchSettings() throws IOException {
-    HttpURLConnection connection = connectionFactory.projectSettings(writeKey);
+    HttpURLConnection connection = connectionFactory.projectSettings(writeKey, accountID);
     int responseCode = connection.getResponseCode();
     if (responseCode != HTTP_OK) {
       connection.disconnect();

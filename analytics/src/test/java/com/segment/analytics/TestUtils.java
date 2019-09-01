@@ -45,6 +45,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 import org.json.JSONObject;
+import org.mockito.ArgumentMatcher;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.robolectric.RuntimeEnvironment;
@@ -157,7 +158,7 @@ public final class TestUtils {
   }
 
   public static <K, V> Map<K, V> mapEq(Map<K, V> expected) {
-    return argThat(new MapMatcher<>(expected));
+    return argThat((ArgumentMatcher<Map<K, V>>) new MapMatcher<>(expected));
   }
 
   private static class MapMatcher<K, V> extends TypeSafeMatcher<Map<K, V>> {
@@ -180,7 +181,7 @@ public final class TestUtils {
   }
 
   public static JSONObject jsonEq(JSONObject expected) {
-    return argThat(new JSONObjectMatcher(expected));
+    return argThat((ArgumentMatcher<JSONObject>) new JSONObjectMatcher(expected));
   }
 
   private static class JSONObjectMatcher extends TypeSafeMatcher<JSONObject> {

@@ -23,18 +23,20 @@
  */
 package com.segment.analytics.integrations;
 
-import static com.segment.analytics.internal.Utils.assertNotNull;
-import static com.segment.analytics.internal.Utils.assertNotNullOrEmpty;
-import static com.segment.analytics.internal.Utils.isNullOrEmpty;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import com.segment.analytics.Traits;
 import com.segment.analytics.internal.Private;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import static com.segment.analytics.internal.Utils.assertNotNull;
+import static com.segment.analytics.internal.Utils.assertNotNullOrEmpty;
+import static com.segment.analytics.internal.Utils.isNullOrEmpty;
 
 public class GroupPayload extends BasePayload {
 

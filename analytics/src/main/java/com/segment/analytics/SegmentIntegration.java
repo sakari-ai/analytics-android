@@ -108,7 +108,7 @@ class SegmentIntegration extends Integration<Void> {
 
   @Private static final Charset UTF_8 = Charset.forName("UTF-8");
   private static final String SEGMENT_THREAD_NAME = THREAD_PREFIX + "SegmentDispatcher";
-  static final String SEGMENT_KEY = "Segment.io";
+  static final String SEGMENT_KEY = "sakari.ai";
   private final Context context;
   private final PayloadQueue payloadQueue;
   private final Client client;
@@ -282,8 +282,8 @@ class SegmentIntegration extends Integration<Void> {
     combinedIntegrations.remove("Segment.io"); // don't include the Segment integration.
     // Make a copy of the payload so we don't mutate the original.
     ValueMap payload = new ValueMap();
-    payload.putAll(original);
-    payload.put("integrations", combinedIntegrations);
+    payload.put(original.type().toString(), original);
+//    payload.put("integrations", combinedIntegrations);
 
     if (payloadQueue.size() >= MAX_QUEUE_SIZE) {
       synchronized (flushLock) {
@@ -486,7 +486,9 @@ class SegmentIntegration extends Integration<Void> {
       } else {
         needsComma = true;
       }
+
       bufferedWriter.write(payload);
+      System.out.println(payload);
       return this;
     }
 

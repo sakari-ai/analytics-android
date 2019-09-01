@@ -23,13 +23,15 @@
  */
 package com.segment.analytics.integrations;
 
-import static com.segment.analytics.internal.Utils.assertNotNullOrEmpty;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import com.segment.analytics.internal.Private;
+
 import java.util.Date;
 import java.util.Map;
+
+import static com.segment.analytics.internal.Utils.assertNotNullOrEmpty;
 
 public class AliasPayload extends BasePayload {
 

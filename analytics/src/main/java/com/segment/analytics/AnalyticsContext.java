@@ -315,7 +315,6 @@ public class AnalyticsContext extends ValueMap {
     Display display = manager.getDefaultDisplay();
     DisplayMetrics displayMetrics = new DisplayMetrics();
     display.getMetrics(displayMetrics);
-    screen.put(SCREEN_DENSITY_KEY, displayMetrics.density);
     screen.put(SCREEN_HEIGHT_KEY, displayMetrics.heightPixels);
     screen.put(SCREEN_WIDTH_KEY, displayMetrics.widthPixels);
     put(SCREEN_KEY, screen);

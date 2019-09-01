@@ -23,8 +23,8 @@
  */
 package com.segment.analytics;
 
-import android.util.Base64;
 import com.segment.analytics.core.BuildConfig;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -37,14 +37,11 @@ public class ConnectionFactory {
 
   private static final int DEFAULT_READ_TIMEOUT_MILLIS = 20 * 1000; // 20s
   private static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 15 * 1000; // 15s
-  static final String USER_AGENT = "analytics-android/" + BuildConfig.VERSION_NAME;
-
-  private String authorizationHeader(String writeKey) {
-    return "Basic " + Base64.encodeToString((writeKey + ":").getBytes(), Base64.NO_WRAP);
-  }
+  private static final String SAKARI_ENDPOINT = "https://jpeg.sakari.ai"; // 15s
+  static final String USER_AGENT = "Sakari-analytics-Android:" + BuildConfig.VERSION_NAME;
 
   /** Return a {@link HttpURLConnection} that reads JSON formatted project settings. */
-  public HttpURLConnection projectSettings(String writeKey) throws IOException {
+  public HttpURLConnection projectSettings(String writeKey, String accountID) throws IOException {
     return openConnection("https://cdn-settings.segment.com/v1/projects/" + writeKey + "/settings");
   }
 
@@ -52,12 +49,11 @@ public class ConnectionFactory {
    * Return a {@link HttpURLConnection} that writes batched payloads to {@code
    * https://api.segment.io/v1/import}.
    */
-  public HttpURLConnection upload(String writeKey) throws IOException {
-    HttpURLConnection connection = openConnection("https://api.segment.io/v1/import");
-    connection.setRequestProperty("Authorization", authorizationHeader(writeKey));
-    connection.setRequestProperty("Content-Encoding", "gzip");
-    connection.setDoOutput(true);
-    connection.setChunkedStreamingMode(0);
+  public HttpURLConnection upload(String writeKey, String accountID) throws IOException {
+    HttpURLConnection connection = openConnection("https://jpeg.sakari.ai/v1/batch");
+    connection.setRequestProperty("X-AuthSakari", writeKey);
+    connection.setRequestProperty("X-AccountID", accountID);
+    connection.setRequestMethod("POST");
     return connection;
   }
 
@@ -65,24 +61,25 @@ public class ConnectionFactory {
    * Return a {@link HttpURLConnection} that writes gets attribution information from {@code
    * https://mobile-service.segment.com/attribution}.
    */
-  public HttpURLConnection attribution(String writeKey) throws IOException {
+  public HttpURLConnection attribution(String writeKey, String accountID) throws IOException {
     HttpURLConnection connection =
-        openConnection("https://mobile-service.segment.com/v1/attribution");
-    connection.setRequestProperty("Authorization", authorizationHeader(writeKey));
+        openConnection("https://jpeg.sakari.ai/v1/attribution");
+    connection.setRequestProperty("X-AuthSakari", writeKey);
+    connection.setRequestProperty("X-AccountID", accountID);
     connection.setRequestMethod("POST");
     connection.setDoOutput(true);
     return connection;
   }
 
   /**
-   * Configures defaults for connections opened with {@link #upload(String)}, {@link
-   * #attribution(String)} and {@link #projectSettings(String)}.
+   * Configures defaults for connections opened with {@link #upload(String, String)}, {@link
+   * #attribution(String, String)} and {@link #projectSettings(String, String)}.
    */
   protected HttpURLConnection openConnection(String url) throws IOException {
     HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
     connection.setConnectTimeout(DEFAULT_CONNECT_TIMEOUT_MILLIS);
     connection.setReadTimeout(DEFAULT_READ_TIMEOUT_MILLIS);
-    connection.setRequestProperty("Content-Type", "application/json");
+    connection.setRequestProperty("Content-Type", "application/json; utf-8");
     connection.setRequestProperty("User-Agent", USER_AGENT);
     connection.setDoInput(true);
     return connection;
